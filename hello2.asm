@@ -21,7 +21,7 @@ DATA      SEGMENT
 ;  Директивы описания данных
 
 HELLO     DB 'Hello Worlds!', 0AH, 0DH,EOFLine
-GREETING  DB 'Student from 1303 - Nasonov Yaroslav$'
+GREETING  DB 'Student from 1303 - Nasonov Yaroslav$' ; Приветственная строка
 DATA      ENDS
 
 ; Код программы
