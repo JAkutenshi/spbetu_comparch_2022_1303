@@ -37,8 +37,7 @@ Main      PROC  FAR
 	mov i1,cx	;i1(f1) = cx = 3i + 4
  
 	sal cx, 1	;cx = 6i + 8
-	mov ax, 18	;ax = 18
-	sub cx, ax	;cx = cx - ax = 6i - 10
+	sub cx, 18	;cx = cx - ax = 6i - 10
 	mov i2,cx	;i2(f2) = cx = 6i - 10
 	jmp PART2	;идем на PART2
  
@@ -50,8 +49,7 @@ PART1:			;если a>b
 	mov i1,ax	;i1(f1) = cx = 15 - 2i
  
 	sal ax, 1	;ax = 30 - 4i
-	mov cx,33	;cx = 33
-	sub ax,cx	;ax = ax - cx = -3 - 4i
+	sub ax,33	;ax = ax - cx = -3 - 4i
 	mov i2,ax	;i2(f2) = cx = -(3 + 4i)
  
 ;Вычисление f3
