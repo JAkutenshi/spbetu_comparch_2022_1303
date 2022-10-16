@@ -25,25 +25,18 @@ Main      PROC  FAR
 
 ;Вычисление f1 и f2
 	mov ax,a	;заносим значение а в ах
-	mov dx,b	;заносим значение b в dx
 	mov cx,i	;заносим i в cx
-	cmp ax,dx	;Сравнение значений a и b	
+	cmp ax,b	;Сравнение значений a и b	
 	jg A1		;если a>b то на A1
 
-
-	mov ax,i	;если a<=b
+				;если a<=b
 	sal cx,1	;умножение i на 2 cx = i*2
-	add cx,ax	;cx = 2*i + i = 3*i	
+	add cx,i	;cx = 2*i + i = 3*i	
 	mov ax,4	;ax = 4
 	add cx,ax	;cx = 3*i + 4
 	mov i1,cx	;сохранение результата в f1
 	
-	mov cx,i	;восстанавливаем значени i в cx
-	inc cx		;cx = i + 1
-	inc cx		;cx = i + 2
-	mov ax,cx	;ax = i + 2
-	sal cx,1	;cx = 2*(i + 2)
-	add cx,ax	;cx = 2*(i + 2) + (i + 2) = 3*(i + 2)
+	add cx,ax	;cx = 3*i + 4 + 2 = 3(i + 2)
 	mov i2,cx	;сохраняем рез-т в f2
 	jmp A2		;Пропускаем следующие шаги
 
@@ -64,15 +57,14 @@ A1:				;если a>b
 ;Вычисление f3
 A2:
 	mov ax,k
-	mov bx,0
 	
-	cmp ax,bx	;сравниваем k и 0
+	cmp ax,0	;сравниваем k и 0
 	JNe B1		;если k не равно 0 то перйти на B1
 	
 				;решение при к = 0
 	mov dx,i1	;dx = i1
 	add dx,i2	;dx = i1 + i2
-	cmp dx,bx
+	cmp dx,0
 	JGe C1		;если i1+ i2 >= 0 то перейти на C1
 	
 	neg dx		;если i1 + i2 < 0 то меняем знак на противоположный
