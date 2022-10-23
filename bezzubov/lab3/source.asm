@@ -42,11 +42,12 @@ Main    PROC    FAR
     add CX, 4 ; i*3 + 4
     mov i1, CX
 
-    mov CX, i
-    add CX, 2 ;i+2
-    mov AX, CX ;помещаем i+2 в ax
-    sal CX, 1 ; (i+2)*2
-    add CX, AX ; (i+2)*2 + (i+2)
+    ; mov CX, i
+    ; add CX, 2 ;i+2
+    ; mov AX, CX ;помещаем i+2 в ax
+    ; sal CX, 1 ; (i+2)*2
+    ; add CX, AX ; (i+2)*2 + (i+2)
+    add CX, 2
     mov i2, CX
 
     jmp FUNCTION_3
@@ -59,9 +60,9 @@ A_Greater:
     sub AX, CX
     mov i1, AX
 
-    mov CX, i
+    ; mov CX, i
     mov AX, 4
-    sal CX, 1 ;i*2
+    ; sal CX, 1 ;i*2
     add CX, i ;i*2 + i = 3i
     sal CX, 1 ; 3i*2
     sub AX, CX
