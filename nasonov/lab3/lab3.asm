@@ -35,9 +35,9 @@ CODE SEGMENT
 	mov cx, a 
 	cmp cx, b
 
-	jg f_case2 
+	jg a_greater_b
 
-	f_case1: ; a <= b
+	a_less_equal_b: ; a <= b
 		; f1 : i1 = 2 + 3 * i
 		mov i1, 2
 		add i1, ax
@@ -46,9 +46,9 @@ CODE SEGMENT
 		mov i2, 6
 		sub i2, bx
 
-		jmp f_final
+		jmp f3
 
-	f_case2: ; a > b
+	a_greater_b: ; a > b
 		; f1 : 4 - 6 * i
 		mov i1, 4 
 		sub i1, bx
@@ -58,8 +58,7 @@ CODE SEGMENT
 		add ax, i
 		sub i2, ax
 
-	f_final:
-		; f3 : if k < 0: res = |i1| + |i2| else: res = max(6, |i1|)
+	f3:
 		mov ax,i1
 		mov bx,i2
 
@@ -69,25 +68,25 @@ CODE SEGMENT
 	pos_i1: ; i1 = |i1|
 		neg ax
 
-		mov res, ax
+	mov res, ax
 
 	cmp_k:
 		mov cx, k
 		cmp cx, 0
 		jl neg_k ; k < 0
 
-	pos_k: ; k >= 0
+	pos_k: ; k >= 0 : res = max(6, |i1|)
 		cmp ax, 6
 		jg final
 		mov res, 6
 		jmp final
 
-	neg_k: ; k < 0
+	neg_k: ; k < 0 : res = |i1| + |i2|
 		cmp bx, 0
-		jge case3
+		jge pos_i2
 		neg bx
 	
-	case3:
+	pos_i2:
 		add res, bx
 
 	final:
