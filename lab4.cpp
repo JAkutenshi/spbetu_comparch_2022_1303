@@ -8,9 +8,9 @@ int main() {
 	system("chcp 1251 > nul");
 	setlocale(LC_CTYPE, "rus");
 
-	cout << "Êóçíåöîâ Íèêîëàé 1303\nÇàäàíèå: óäàëåíèå ñèìâîëîâ ðóññêîãî àëôàâèòà è öèôð\n";
+	cout << "ÐšÑƒÐ·Ð½ÐµÑ†Ð¾Ð² ÐÐ¸ÐºÐ¾Ð»Ð°Ð¹ 1303\nÐ—Ð°Ð´Ð°Ð½Ð¸Ðµ: ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ðµ ÑÐ¸Ð¼Ð²Ð¾Ð»Ð¾Ð² Ñ€ÑƒÑÑÐºÐ¾Ð³Ð¾ Ð°Ð»Ñ„Ð°Ð²Ð¸Ñ‚Ð° Ð¸ Ñ†Ð¸Ñ„Ñ€\n";
 
-	cout << "Ââåäèòå ñòðîêó\n";
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ‚Ñ€Ð¾ÐºÑƒ\n";
 	cin.getline(input_str, 81);
 
 	ofstream file;
@@ -26,13 +26,13 @@ int main() {
 			lodsb
 			cmp al, '\0'
 			je finish
-			cmp al, '¸'
+			cmp al, 'Ñ‘'
 			je checking
-			cmp al, '¨'
+			cmp al, 'Ð'
 			je checking
-			cmp al, 'À'
+			cmp al, 'Ð'
 			jl write
-			cmp al, 'ÿ'
+			cmp al, 'Ñ'
 			jle checking
 			cmp al, '0'
 			jl write
@@ -46,7 +46,7 @@ int main() {
 		finish :
 	};
 
-	cout << "Ñòðîêà áåç ñèìâîëîâ ðóññêîãî àëôàâèòà è öèôð\n";
+	cout << "Ð¡Ñ‚Ñ€Ð¾ÐºÐ° Ð±ÐµÐ· ÑÐ¸Ð¼Ð²Ð¾Ð»Ð¾Ð² Ñ€ÑƒÑÑÐºÐ¾Ð³Ð¾ Ð°Ð»Ñ„Ð°Ð²Ð¸Ñ‚Ð° Ð¸ Ñ†Ð¸Ñ„Ñ€\n";
 	cout << output_str;
 	file << output_str;
 	file.close();
