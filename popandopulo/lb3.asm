@@ -1,17 +1,17 @@
-;task option ¹20
+;task option Â¹20
 ;f1&f2:
-;	/ -(6*i - 4) , ïðè a>b
+;	/ -(6*i - 4) , Ã¯Ã°Ã¨ a>b
 ;f4 = <
-;	\ 3*(i+2) , ïðè a<=b
+;	\ 3*(i+2) , Ã¯Ã°Ã¨ a<=b
 
-;	/ 2*(i+1) -4 , ïðè a>b
+;	/ 2*(i+1) -4 , Ã¯Ã°Ã¨ a>b
 ;f6 = <
- ;	\ 5 - 3*(i+1), ïðè a<=b
+ ;	\ 5 - 3*(i+1), Ã¯Ã°Ã¨ a<=b
 
 ;f3:
-;	/ |i1| - |i2|, ïðè k<0
+;	/ |i1| - |i2|, Ã¯Ã°Ã¨ k<0
 ;f8 = <
-;	\ max(4,|i2|-3), ïðè k>=0
+;	\ max(4,|i2|-3), Ã¯Ã°Ã¨ k>=0
 
 ASSUME CS:CODE, SS: AStack, DS: DATA
 
@@ -66,8 +66,7 @@ Main    PROC    FAR
 
 
 a_greater:
-    mov ax, 2
-    neg ax
+    mov ax, -2
     sal cx, 1
     sub ax, cx	; -2 + 2*i = 2*(i + 1) - 4
     mov i1, ax
@@ -96,8 +95,7 @@ cmp_k:
          jl neg_k ; k < 0
 
 pos_k: ; k >= 0
-        mov bx,3
-        neg bx
+        mov bx, -3
         sub ax,bx
         mov res, ax
         cmp ax, bx
