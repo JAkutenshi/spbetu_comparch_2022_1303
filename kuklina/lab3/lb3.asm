@@ -51,7 +51,7 @@ PART1:          ;если a>b
         sub ax,cx   ;ax = ax - cx = 7 - 4i
         mov i1,ax   ;i1(f1) = cx = 7 - 4i
  
-        sal ax,1 ; ax=3-2i
+        shr ax,1 ; ax=3-2i
         sub ax,1   ;ax = ax - cx = 2 - 2i
         neg ax
         mov i2,ax   ;i2(f2) = cx = -(2 - 2i)
