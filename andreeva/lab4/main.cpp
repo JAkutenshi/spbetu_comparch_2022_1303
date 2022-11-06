@@ -26,7 +26,7 @@ int main() {
 		mov edi, offset output_str
 
 		checking :
-		lodsb
+			lodsb
 			cmp al, '\0'
 			je finish
 			cmp al, 'ё'
@@ -40,22 +40,22 @@ int main() {
 
 			jmp checking
 
-			checking_digit :
-		cmp al, '0'
+		checking_digit:
+			cmp al, '0'
 			jge write
 			jmp checking
 
-			checking_rus :
-		cmp al, 'А'
+		checking_rus:
+			cmp al, 'А'
 			jge write
 			jmp checking
 
 
-			write :
-		stosb
+		write:
+			stosb
 			jmp checking
 
-			finish :
+		finish:
 	};
 
 	cout << "Строка только из цифр и латинских букв.\n";
