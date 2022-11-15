@@ -1,0 +1,215 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/15/22 13:29:5
+                                                             Page     1-1
+
+
+ 0000				AStack SEGMENT STACK
+ 0000  0200[				DW 512 DUP(?)
+	   ????			
+			 ]	
+				
+ 0400				AStack ENDS
+				
+ 0000				DATA SEGMENT
+ 0000  0000			        KEEP_CS DW 0
+ 0002  0000			        KEEP_IP DW 0
+ 0004				DATA ENDS
+				
+				
+ 0000				CODE SEGMENT
+				ASSUME CS:CODE, DS:DATA, SS:AStack
+				
+ 0000				IntToStr PROC
+ 0000  50			   	push AX ; сохранение реги
+				стров
+ 0001  52			   	push DX
+ 0002  53			   	push BX
+ 0003  51			   	push CX
+				
+ 0004  33 C9			   	xor CX, CX ; обнуление CX дл
+				я хранения кол-ва символо�
+				�
+ 0006  BB 000A			   	mov BX, 10 ; делитель 10
+ 0009				division:
+ 0009  33 D2			    xor DX,DX	; обнуление DX
+ 000B  F7 F3			    div BX	; деление AX = (DX, AX)/
+				BX, остаток в DX
+ 000D  80 C2 30			    add DL, '0' ; перевод цифры в 
+				символ
+ 0010  52			    push DX	; сохранение оста
+				тка на стек 
+ 0011  41			    inc CX	; увеличить счетч
+				ик
+ 0012  85 C0			    test AX, AX ; проверка AX
+ 0014  75 F3			    jnz division; если частное не 
+				0, то повторяем
+ 0016  B4 02			    mov ah, 02h
+				    
+ 0018				print:
+ 0018  5A			    pop DX	; достать символ �
+				�з стека CX раз
+ 0019  CD 21			    int 21h
+ 001B  E2 FB			    loop print	; пока cx != 0 выполн
+				ить переход
+				
+ 001D  59			    pop CX	; вернуть значени
+				я со стека
+ 001E  5B			    pop BX
+ 001F  5A			    pop DX
+ 0020  58			    pop AX
+Microsoft (R) Macro Assembler Version 5.10                  11/15/22 13:29:5
+                                                             Page     1-2
+
+
+ 0021  C3			    ret
+ 0022				IntToStr endp
+				
+				
+ 0022				GetTime PROC FAR
+ 0022  EB 37 90			       jmp time
+ 0025  0000				KEEP_SS DW 0
+ 0027  0000				KEEP_SP DW 0
+ 0029  0032[				Stack DB 50 dup(" ")
+	   20			
+			 ]	
+				
+ 005B				time:
+ 005B  2E: 8C 16 0025 R			mov KEEP_SS, SS
+ 0060  2E: 89 26 0027 R			mov KEEP_SP, SP
+ 0065  BC ---- R			mov SP, SEG Stack
+ 0068  8E D4				mov SS, SP
+ 006A  BC 005B R			mov SP, offset time
+				
+ 006D  50				push AX    ; сохранение из�
+				�еняемых регистров
+ 006E  51				push CX
+ 006F  52				push DX
+					
+ 0070  B4 00				mov AH, 00h	; читать часы
+				 (счетчик тиков)
+ 0072  CD 1A				int 1Ah	; CX,DX = счетчик тик
+				ов
+					
+ 0074  8B C1				mov AX, CX
+ 0076  E8 0000 R			call IntToStr
+ 0079  8B C2				mov AX, DX
+ 007B  E8 0000 R			call IntToStr
+					
+ 007E  5A				pop DX
+ 007F  59				pop CX
+ 0080  58				pop AX   ; восстановление
+				 регистров
+				
+ 0081  2E: 8E 16 0025 R			mov SS, KEEP_SS 
+ 0086  2E: 8B 26 0027 R			mov SP, KEEP_SP
+				
+ 008B  B0 20				mov AL, 20H
+ 008D  E6 20				out  20H,AL
+ 008F  CF				iret
+ 0090				GetTime ENDP
+				
+				
+ 0090				Main	PROC  FAR
+ 0090  1E				push DS
+ 0091  2B C0				sub AX,AX
+ 0093  50				push AX
+ 0094  B8 ---- R			mov AX, DATA
+ 0097  8E D8				mov DS, AX
+Microsoft (R) Macro Assembler Version 5.10                  11/15/22 13:29:5
+                                                             Page     1-3
+
+
+				
+ 0099  B4 35				mov AH,35h ; дать вектор пр
+				ерывания
+ 009B  B0 60				mov AL,60h ; номер вектора
+ 009D  CD 21				int 21h    ; вызов -> выход: 
+				ES:BX = адрес обработчика пр�
+				�рывания
+ 009F  89 1E 0002 R			mov KEEP_IP, BX ; запоминани�
+				� смещения
+ 00A3  8C 06 0000 R			mov KEEP_CS, ES ; запоминани�
+				� сегмента
+				
+ 00A7  1E				push DS
+ 00A8  BA 0022 R			mov DX, offset GetTime	; смещен�
+				�е для процедуры
+ 00AB  B8 ---- R			mov AX, seg GetTime	; сегмен�
+				� процедуры
+ 00AE  8E D8				mov DS, AX
+ 00B0  B4 25				mov AH, 25h 	; функция уст
+				ановки вектора
+ 00B2  B0 60				mov AL, 60h 	; номер векто
+				ра
+ 00B4  CD 21				int 21h 	; установить 
+				вектор прерывания на указ
+				анный адрес нового обрабо
+				тчика
+ 00B6  1F				pop DS
+				
+ 00B7  CD 60				int 60h	; вызов прерывани
+				я пользователя
+					
+ 00B9  FA				CLI 	; сбрасывает флаг
+				 прерывания IF
+ 00BA  1E				push DS
+ 00BB  8B 16 0002 R			mov DX, KEEP_IP
+ 00BF  A1 0000 R			mov AX, KEEP_CS
+ 00C2  8E D8				mov DS, AX
+ 00C4  B4 25				mov AH, 25h
+ 00C6  B0 60				mov AL, 60h
+ 00C8  CD 21				int 21h
+ 00CA  1F				pop DS
+ 00CB  FB				STI 
+				
+ 00CC  CB				ret
+ 00CD				Main ENDP
+ 00CD				CODE ENDS
+					END Main
+Microsoft (R) Macro Assembler Version 5.10                  11/15/22 13:29:5
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0400	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	00CD	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+DIVISION . . . . . . . . . . . .  	L NEAR	0009	CODE
+
+GETTIME  . . . . . . . . . . . .  	F PROC	0022	CODE	Length = 006E
+
+INTTOSTR . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0022
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+KEEP_SP  . . . . . . . . . . . .  	L WORD	0027	CODE
+KEEP_SS  . . . . . . . . . . . .  	L WORD	0025	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0090	CODE	Length = 003D
+
+PRINT  . . . . . . . . . . . . .  	L NEAR	0018	CODE
+
+STACK  . . . . . . . . . . . . .  	L BYTE	0029	CODE	Length = 0032
+
+TIME . . . . . . . . . . . . . .  	L NEAR	005B	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LB5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+    120 Source  Lines
+    120 Total   Lines
+     19 Symbols
+
+  48012 + 457198 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
