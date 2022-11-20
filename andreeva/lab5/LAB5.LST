@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.10                  11/18/22 21:03:4
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
                                                              Page     1-1
 
 
@@ -15,8 +15,7 @@
  0004  48 65 6C 6C 6F 21		MESSAGE DB 'Hello!', 0dh, 0ah, '$'
        0D 0A 24			
  000D  65 6E 64 0D 0A 24		END_MES DB 'end', 0dh, 0ah, '$'
- 0013  20 24				EMPTY DB ' ', '$'
- 0015				DATA    ENDS
+ 0013				DATA    ENDS
 				
  0000				CODE    SEGMENT
 				    ASSUME CS:CODE, DS:DATA, SS:AStack
@@ -56,11 +55,11 @@
  002A  58					pop ax
  002B  B0 20				   	mov al, 20h
  002D  E6 20				   	out 20h, al
-Microsoft (R) Macro Assembler Version 5.10                  11/18/22 21:03:4
+ 002F  CF					iret
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
                                                              Page     1-2
 
 
- 002F  CF					iret
  0030				FUNC ENDP
 				
  0030				MAIN PROC FAR
@@ -102,7 +101,7 @@
  0070				MAIN ENDP
  0070				CODE ENDS
 				     END MAIN
-Microsoft (R) Macro Assembler Version 5.10                  11/18/22 21:03:4
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
                                                              Symbols-1
 
 
@@ -112,13 +111,12 @@ Segments and Groups:
 
 ASTACK . . . . . . . . . . . . .  	0400	PARA	STACK	
 CODE . . . . . . . . . . . . . .  	0070	PARA	NONE	
-DATA . . . . . . . . . . . . . .  	0015	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0013	PARA	NONE	
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
-EMPTY  . . . . . . . . . . . . .  	L BYTE	0013	DATA
 END_MES  . . . . . . . . . . . .  	L BYTE	000D	DATA
 
 FUNC . . . . . . . . . . . . . .  	F PROC	0005	CODE	Length = 002B
@@ -138,9 +136,9 @@ WRITEMSG . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0005
 @VERSION . . . . . . . . . . . .  	TEXT  510		
 
 
-     92 Source  Lines
-     92 Total   Lines
-     17 Symbols
+     91 Source  Lines
+     91 Total   Lines
+     16 Symbols
 
   48016 + 461291 Bytes symbol space free
 
