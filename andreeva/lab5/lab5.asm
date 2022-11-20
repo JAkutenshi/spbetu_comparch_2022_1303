@@ -32,10 +32,10 @@ FUNC PROC FAR
 			loop lp
 			
 		mov al, 0
-		mov	ah,86h
-		xor	cx,cx
-		mov	dx,10000
-		int	15h
+		mov cx, 002Eh 
+		mov dx, 0000h
+		mov ah, 86h
+		int 15h
 		
 		mov dx, OFFSET END_MES
 		call WriteMsg 
@@ -72,7 +72,11 @@ MAIN PROC FAR
     int 21h
     pop ds
     
-	int 08h
+	mov al, 0
+	mov cx, 002Eh 
+	mov dx, 0000h
+	mov ah, 86h
+	int 15h
 
 	cli
 	push ds
