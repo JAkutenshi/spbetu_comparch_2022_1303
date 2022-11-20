@@ -63,6 +63,10 @@ FUNC PROC FAR
         int        29h
         mov        al,0h                ; CMOS 00h - секунда
         call       print_cmos
+		mov		   al, 0dh
+		int 	   29h
+		mov 	   al, 0ah
+		int 	   29h
 		
 		pop ds
 		pop dx
@@ -73,6 +77,11 @@ FUNC PROC FAR
 	   	out 20h, al
 		iret
 FUNC ENDP
+
+GETCH	PROC NEAR
+	mov ah, 08h
+	int 21h
+GETCH	ENDP
 
 MAIN PROC FAR
     push ds
@@ -96,7 +105,11 @@ MAIN PROC FAR
     int 21h
     pop ds
     
-	int 08h
+	mov ah, 08h
+wait_loop:
+	int 21h
+	cmp al, 1bh
+	jne wait_loop
 
 	cli
 	push ds
