@@ -7,7 +7,6 @@ DATA    SEGMENT
     KEEP_IP DW 0
 	MESSAGE DB 'Hello!', 0dh, 0ah, '$'
 	END_MES DB 'end', 0dh, 0ah, '$'
-	EMPTY DB ' ', '$'
 DATA    ENDS
 
 CODE    SEGMENT
