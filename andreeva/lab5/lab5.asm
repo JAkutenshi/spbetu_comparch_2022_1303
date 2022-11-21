@@ -7,6 +7,7 @@ DATA    SEGMENT
     KEEP_IP DW 0
 	MESSAGE DB 'Hello!', 0dh, 0ah, '$'
 	END_MES DB 'end', 0dh, 0ah, '$'
+	FLAG    DB 0
 DATA    ENDS
 
 CODE    SEGMENT
@@ -19,11 +20,16 @@ WriteMsg  PROC  NEAR
 WriteMsg  ENDP
 
 FUNC PROC FAR
+		cmp  FLAG, 0
+		jne  func_end
+		mov  FLAG, 1
+		
 		push ax
 		push bx
 		push cx
 		push dx
 		push ds
+		
 		
 		mov dx, OFFSET MESSAGE
 		mov cx, 4
@@ -31,11 +37,17 @@ FUNC PROC FAR
 			call WriteMsg
 			loop lp
 			
-		mov al, 0
-		mov cx, 002Eh 
-		mov dx, 0000h
-		mov ah, 86h
-		int 15h
+		; Wait...
+		xor  cx, cx
+		mov  cx, 20
+		update_dx:
+		mov  dx, 0ffffh
+		wait_loop:
+		nop
+		dec  dx
+		cmp  dx, 0
+		jne  wait_loop
+		loop update_dx
 		
 		mov dx, OFFSET END_MES
 		call WriteMsg 
@@ -45,6 +57,7 @@ FUNC PROC FAR
 		pop cx
 		pop bx
 		pop ax
+		func_end:
 	   	mov al, 20h
 	   	out 20h, al
 		iret
