@@ -16,8 +16,8 @@ SUBR_INT PROC FAR
     push DX
     push CX
 
-    mov di, 10000 ;freq
-    mov bx, 7 ;time
+    ;mov di, 10000 ;freq
+    mov bx, 5;time
     mov al, 0b6h
     out 43h, al
     mov dx, 0014h
@@ -60,6 +60,8 @@ Main PROC FAR
     mov ax, DATA
     mov ds, ax
 
+    mov di, 10000
+
     MOV AH, 35H 
     MOV AL, 08H
     INT 21H
@@ -75,8 +77,35 @@ Main PROC FAR
     int 21h
     pop ds
 
-    int 08H
+    
+read_char:
+    push ax
+    mov ah, 1h
+    int 21H
 
+    cmp al, "+"
+    je increase
+
+    cmp al, "-"
+    je decrease
+
+    cmp al, 1bh
+    pop ax
+    jnz read_char
+    jmp exit
+
+increase:
+    add di, 1000
+    pop ax
+    jmp read_char
+
+decrease:
+    sub di, 1000
+    pop ax
+    jmp read_char
+
+
+exit:
     CLI
     PUSH DS
     MOV  DX, KEEP_IP
