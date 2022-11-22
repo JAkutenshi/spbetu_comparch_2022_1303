@@ -37,7 +37,6 @@ FUNC PROC FAR
 			call WriteMsg
 			loop lp
 			
-		; Wait...
 		xor  cx, cx
 		mov  cx, 20
 		update_dx:
