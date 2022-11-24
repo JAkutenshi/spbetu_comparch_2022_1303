@@ -11,97 +11,40 @@ DATA ENDS
 CODE SEGMENT
 ASSUME CS:CODE, DS:DATA, SS:AStack
 
-IntToStr PROC
-   	push AX ; сохранение регистров
-   	push DX
-   	push BX
-   	push CX
-
-   	xor CX, CX ; обнуление CX для хранения кол-ва символов
-   	mov BX, 10 ; делитель 10
-division:
-    xor DX,DX	; обнуление DX
-    div BX	; деление AX = (DX, AX)/BX, остаток в DX
-    add DL, '0' ; перевод цифры в символ
-    push DX	; сохранение остатка на стек 
-    inc CX	; увеличить счетчик
-    test AX, AX ; проверка AX
-    jnz division; если частное не 0, то повторяем
-    mov ah, 02h
-    
-print:
-    pop DX	; достать символ из стека CX раз
-    int 21h
-    loop print	; пока cx != 0 выполнить переход
-
-    pop CX	; вернуть значения со стека
-    pop BX
-    pop DX
-    pop AX
-    ret
-IntToStr endp
-
-IntToMin PROC
-   	push AX ; сохранение регистров
-   	push DX
-   	push BX
-   	push CX
-   	
-   	mov BX, 10920
-   	xor DX, DX
-   	div BX	
+double proc
+	push AX
 	push DX
-	mov DX, AX
-	add DL, '0'
-   	mov AH, 02h
-   	int 21h
-   	
-   	mov BX, 1092
-   	pop DX
-   	mov AX, DX
-   	xor DX, DX
-   	div BX	
-	push DX
-	mov DX, AX
-	add DL, '0'
-   	mov AH, 02h
-   	int 21h
-   	
-   	
-   	mov DL,':'
+	mov DL,':'
 	mov AH, 02h
 	int 21h
-   	
-	mov BX, 180
-   	pop DX
-   	mov AX, DX
-   	xor DX, DX
-   	div BX
-   	push DX
-   	mov DX, AX
-   	add DL, '0'
-   	mov AH, 02h
-   	int 21h
-   	
-   	mov BX, 18
-   	pop DX
-   	mov AX, DX
-   	xor DX, DX
-   	div BX
-   	mov DX, AX
-   	add DL, '0'
-   	mov AH, 02h
-   	int 21h
-   		
-
-    	pop CX	; вернуть значения со стека
-    	pop BX
-    	pop DX
-    	pop AX
-    	ret
-IntToMin endp
+	pop DX
+	pop AX	
+	ret
+double endp
 
 
+print proc
+	push AX
+	push DX
+	push BX
+
+        aam ; AH = AL//10
+        mov BX, AX
+        mov ah, 02h        
+        
+        mov DL, BH
+        add DL, '0'
+        int 21h
+        
+        mov DL, BL
+        add DL, '0'
+        int 21h
+	
+	pop BX
+	pop DX
+	pop AX
+	ret
+print endp
 
 GetTime PROC FAR
        jmp time
@@ -119,16 +62,17 @@ time:
 	push CX
 	push DX
 	
-	mov AH, 00h	; читать часы (счетчик тиков)
-	int 1Ah	; CX,DX = счетчик тиков
-	
-	mov AX, CX
-	call IntToStr
-	mov DL,':'
-	mov AH, 02h
+	mov ah, 2ch
 	int 21h
-	mov AX, DX
-	call IntToMin
+	
+	mov al, ch
+	call print
+	call double
+	mov al, cl
+	call print
+	call double
+	mov al, dh
+	call print
 	
 	pop DX
 	pop CX
