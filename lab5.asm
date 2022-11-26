@@ -8,7 +8,6 @@ DATA    SEGMENT
     COUNTER DW 3
     MESSAGE DB 'MESSAGE', 0dh, 0ah, '$'
     ENDING DB 'END', '$'
-    EMPTY DB ' ', '$'
 DATA    ENDS
 
 CODE    SEGMENT
@@ -73,16 +72,10 @@ MAIN PROC FAR
     int 21h ; меняем прерывание
     pop ds
     
-    begin:
-    	mov ah, 0
-    	int 16h
-		cmp al, 3
-		jne begin
-		mov dx, OFFSET EMPTY
-		call WriteMsg
-		
-	quit:
-	cli
+    mov ah, 01h
+    int 21h
+    
+    cli
 	push ds
 	mov dx, KEEP_IP
 	mov ax, KEEP_CS
