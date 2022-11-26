@@ -8,19 +8,15 @@
 #; rax --> int interval_index + 1
 #; rax = 0 --> not in interval
 find_interval_index:
-  push rdi
 
 find_interval_index_loop:
-  mov  edi, [rdx + rcx * 4 - 4]
-  cmp  eax, edi
+  cmp  eax, [rdx + rcx * 4 - 4]
   jge  find_interval_index_end
   loop find_interval_index_loop
-  xor  rax, rax
 
 find_interval_index_end:
   mov  rax, rcx
 
-  pop  rdi
   ret
 
 #; Input:
