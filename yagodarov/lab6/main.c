@@ -57,12 +57,12 @@ int main() {
     goto error_free_result;
   }
 
-  // fputs("Generated numbers:\n", f);
-  // for (int i = 0; i < n; ++i) {
-  //   fprintf(f, "%d ", n_arr[i]);
-  // }
-  // fputs("\n\n", f);
-  // fputs("Results:\n", f);
+  fputs("Generated numbers:\n", f);
+  for (int i = 0; i < n; ++i) {
+    fprintf(f, "%d ", n_arr[i]);
+  }
+  fputs("\n\n", f);
+  fputs("Results:\n", f);
   for (int i = 0; i < n_int; ++i) {
     fprintf(f, "%d   %d   %d\n", i + 1, int_arr[i], res_arr[i]);
   }
