@@ -25,8 +25,8 @@ find_interval_index_end:
 
 	pop rcx
 
-	cmp rax, rax
-	jz continue_loop
+	cmp rax, 0
+	je continue_loop
 
 	inc dword ptr [rdi + rax * 4 - 4]
 
