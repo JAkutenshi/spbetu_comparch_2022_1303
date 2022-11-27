@@ -61,9 +61,9 @@ int main() {
     }
 
     fputs("\n\n", f);
-    fputs("Results:\n", f);
+    fputs("Information processing results:\n", f);
     for (int i = 0; i < intervals; ++i) {
-        fprintf(f, "%d   %d   %d\n", i + 1, intervals_array[i], resultArray[i]);
+        fprintf(f, "Interval number: %d; Interval border: %d; Count of occurrences: %d.\n", i + 1, intervals_array[i], resultArray[i]);
     }
 
     fclose(f);
