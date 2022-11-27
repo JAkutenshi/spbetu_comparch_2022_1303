@@ -85,7 +85,7 @@ int main() {
 	func(intervals, N_int, N, numbers, final_answer);
 
 	ofstream file("output.txt");
-	auto str = "N\tBorders\tThe Amount of numbers";
+	auto str = "N\tГраницы\tКоличество чисел";
 	file << str << endl;
 	cout << str << endl;
 	for (int i = 0; i < N_int; i++) {
