@@ -1,7 +1,6 @@
 DATA SEGMENT
     keep_ip dw 0 ; здесь будет храниться смещение прерывания
     keep_cs dw 0 ; здесь будет храниться сегмент прерывания, которое мы заменим
-    message DB 10,13,'The interraption was called!$' ; 10,13 это перевод строки
 DATA ENDS
 
 AStack SEGMENT STACK
@@ -10,14 +9,44 @@ AStack ENDS
 
 CODE SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:AStack
- 
+
+print_cmos proc near
+        out        70h,al               ; послать AL в индексный порт CMOS
+        in         al,71h               ; прочитать данные
+        push       ax
+		mov        cl, 4
+        shr        al,cl                ; выделить старшие четыре бита
+        add        al,'0'               ; добавить ASCII-код цифры 0
+        int        29h                  ; вывести на экран
+        pop        ax
+        and        al,0Fh               ; выделить младшие четыре бита
+        add        al,30h               ; добавить ASCII-код цифры 0
+        int        29h                  ; вывести на экран
+        ret
+print_cmos endp
+
 SUBR_INT PROC FAR
     push ax
 	push bx
 	push dx
 	push cx
-    mov ah, 09h
-    int 21h
+
+
+	mov        al,4                 ; CMOS 04h - час
+	call       print_cmos
+	mov        al,':'               
+	int        29h
+	mov        al,2                 ; CMOS 02h - минута
+	call       print_cmos
+	mov        al,':'               
+	int        29h
+	mov        al,0h                ; CMOS 00h - секунда
+	call       print_cmos
+	mov		   al, 0dh
+	int 	   29h
+	mov 	   al, 0ah
+	int 	   29h
+
 
 	pop cx
 	pop dx
@@ -53,10 +82,14 @@ Main PROC FAR
     INT 21H ; меняем смещение и сегмент прерывания на наши собственные
     POP DS
     
-    ;вызываем прерывание
-    mov dx, offset message
-    int 1CH
-
+    ;вызываем таймер, во время которого будет вызвано прерывание автоматически
+	
+	mov al, 0
+	mov cx, 7
+	mov dx, 0
+	mov ah, 86h
+	int 15h
+	
     
     ;востанавливаем старое прерывание
     CLI
