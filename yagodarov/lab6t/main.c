@@ -80,6 +80,7 @@ int main() {
 
 error_free_result:
   free(res_arr);
+  free(max_numbers);
 error_free_sources:
   free(n_arr);
   free(int_arr);
