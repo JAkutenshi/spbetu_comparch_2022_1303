@@ -66,6 +66,8 @@ int main() {
         std::cin >> tmp;
         arrayLGrInt[i] = tmp;
     }
+    
+    std::sort(arrayLGrInt, arrayLGrInt + totalNInt);
 
     int* result = new int[totalNInt] {0};
     countNumbers(array, totalNumbers, arrayLGrInt, totalNInt, result);
