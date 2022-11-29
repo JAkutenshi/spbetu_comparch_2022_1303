@@ -41,19 +41,17 @@ lp:
 		mov [edi + 4 * ebx], eax	;устанавливаем полученное значение обратно в массив result
 		pop eax
 
-		push ebx					;	индекс текущего интервала		
-		push eax					;	индекс текущего числа
-		
-		mov eax, [esi + 4 * eax]	;	в eax кладем число текущее
+
+		push eax
 		push edi
 		mov edi, mins
-		cmp eax, [edi + 4 * ebx]	;	сравниваем число с минимумом
+		mov eax, [esi + 4 * eax] ; кладем в eax элемент массива array
+		cmp eax, [edi + 4 * ebx] ; сравниваем этот элемент с элементом минимума в позиции текущей левой границей
 		jge not_change
-		mov [edi + ebx], eax
+		mov [edi + 4 * ebx], eax
 		not_change:
 		pop edi
 		pop eax
-		pop ebx
 		
 		mov edi, leftBord			;возвращаем в edi leftBord для дальнейших итераций
 
