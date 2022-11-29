@@ -85,10 +85,7 @@ Main	PROC  FAR
 	mov DS, AX
 	
 	
-	MOV     CX, 0FH
-	MOV     DX, 4240H
-	MOV     AH, 86H
-	INT     15H
+	
 	
 	
 	mov AH,35h ; дать вектор прерывания
@@ -96,7 +93,7 @@ Main	PROC  FAR
 	int 21h    ; вызов -> выход: ES:BX = адрес обработчика прерывания
 	mov KEEP_IP, BX ; запоминание смещения
 	mov KEEP_CS, ES ; запоминание сегмента
-
+	
 	push DS
 	mov DX, offset GetTime	; смещение для процедуры
 	mov AX, seg GetTime	; сегмент процедуры
@@ -105,8 +102,12 @@ Main	PROC  FAR
 	mov AL, 08h 	; номер вектора
 	int 21h 	; установить вектор прерывания на указанный адрес нового обработчика
 	pop DS
-
 	int 08h	; вызов прерывания пользователя
+	
+	MOV     CX, 0FH
+	MOV     DX, 4240H
+	MOV     AH, 86H
+	INT     15H
 	
 	CLI 	; сбрасывает флаг прерывания IF
 	push DS
