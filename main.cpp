@@ -69,11 +69,18 @@ int main() {
 	auto numbers = new int[N];
 	random_device rd;
 	mt19937 generator(rd());
+	/*
 	normal_distribution<> dist(0.05,1.3);
 	for (int i = 0; i < N; i++) {
 		int a = dist(generator);
 		if (a >= X_min && a <= intervals[N_int])
 			numbers[i] = int(a);
+		//cout << numbers[i] << " ";
+	}*/
+
+	uniform_int_distribution<> dist(X_min, X_max);
+	for (int i = 0; i < N; i++) {
+		numbers[i] = dist(generator);
 	}
 	cout << endl;
 
