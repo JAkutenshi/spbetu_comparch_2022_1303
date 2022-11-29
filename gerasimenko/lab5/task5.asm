@@ -1,118 +1,132 @@
-AStack SEGMENT STACK
-	DW 512 DUP(?)
-AStack ENDS
+ASSUME CS:CODE, DS:DATA, SS:STACK
+
+STACK    SEGMENT  STACK
+          DW 1024 DUP(?)
+STACK    ENDS
 
 DATA SEGMENT
-        KEEP_CS DW 0
-        KEEP_IP DW 0
+        KEEP_CS DW 0 
+        KEEP_IP DW 0 
+		NUM DW 0
+		MESSAGE DB 2 DUP(?)
 DATA ENDS
 
-
 CODE SEGMENT
-ASSUME CS:CODE, DS:DATA, SS:AStack
 
-double proc
-	push AX
+OutInt PROC
 	push DX
-	mov DL,':'
-	mov AH, 02h
-	int 21h
-	pop DX
-	pop AX	
-	ret
-double endp
+	push CX
 
-
-print proc
-	push AX
-	push DX
-	push BX
-
-        aam ; AH = AL//10
-        mov BX, AX
-        mov ah, 02h        
-        
-        mov DL, BH
-        add DL, '0'
-        int 21h
-        
-        mov DL, BL
-        add DL, '0'
-        int 21h
+    xor     cx, cx 
+    mov     bx, 10 
+oi2:
+    xor     dx,dx 
+    div     bx 
+    push    dx
+    inc     cx
 	
-	pop BX
-	pop DX
-	pop AX
-	ret
-print endp
+    test    ax, ax 
+    jnz     oi2
+; Вывод
+    mov     ah, 02h
+oi3:
+    pop     dx
+    add     dl, '0' ; перевод цифры в символ
+    int     21h
+; Повторим ровно столько раз, сколько цифр насчитали.
+    loop    oi3 ; пока cx не 0 выполняется переход
+    
+	POP CX
+	POP DX
+    ret
+ 
+OutInt endp
 
-GetTime PROC FAR
-	push AX    ; сохранение изменяемых регистров
-	push CX ;
-	push DX; 
+
+SUBR_INT PROC FAR
+       
+	PUSH AX    ; сохранение изменяемых регистров
+	PUSH CX
+	PUSH DX
+	;INT 1aH: ввод-вывод для времени
+       
+	mov AH, 00H
+	; выход: CX,DX = счетчик тиков с момента сброса. CX - старшая часть значения.
+         ;  AL = 0, если таймер не переполнялся за 24 часа с момента сброса.
+         
+	int 1AH
 	
-	mov ah, 2ch 
-
-
-	int 21h
+	mov AX, CX
+	call OutInt
+	mov AX, DX
+	call OutInt
 	
-	mov al, ch
-	call print
-	call double
-	mov al, cl
-	call print
-	call double
-	mov al, dh
-	call print
+	POP  DX
+	POP  CX
+	POP  AX   ; восстановление регистров
 	
-	pop DX
-	pop CX
-	pop AX   ; восстановление регистров
-
-
-
-	mov AL, 20H
-	out  20H,AL
+	MOV  AL, 20H
+	
+	OUT  20H,AL
+       
 	iret
-GetTime ENDP
-
-
-Main	PROC  FAR 
-	push DS
-	sub AX,AX
-	push AX
-	mov AX, DATA
-	mov DS, AX
-
-	mov AH,35h ; дать вектор прерывания
-	mov AL,08h ; номер вектора
-	int 21h    ; вызов -> выход: ES:BX = адрес обработчика прерывания
-	mov KEEP_IP, BX ; запоминание смещения
-	mov KEEP_CS, ES ; запоминание сегмента
-
-	push DS
-	mov DX, offset GetTime	; смещение для процедуры
-	mov AX, seg GetTime	; сегмент процедуры
-	mov DS, AX
-	mov AH, 25h 	; функция установки вектора
-	mov AL, 08h 	; номер вектора
-	int 21h 	; установить вектор прерывания на указанный адрес нового обработчика
-	pop DS
-
-	int 08h	; вызов прерывания пользователя
 	
-	CLI 	; сбрасывает флаг прерывания IF
-	push DS
-	mov DX, KEEP_IP
-	mov AX, KEEP_CS
-	mov DS, AX
-	mov AH, 25h
-	mov AL, 08h
-	int 21h
-	pop DS
-	STI 
+SUBR_INT ENDP
 
-	ret
-Main ENDP
+
+Main	PROC  FAR
+	push  DS       ;\  Сохранение адреса начала PSP в стеке
+	sub   AX,AX    ; > для последующего восстановления по
+	push  AX       ;/  команде ret, завершающей процедуру.
+	mov   AX,DATA             ; Загрузка сегментного
+	mov   DS,AX   
+
+
+	; Запоминание текущего вектора прерывания
+	MOV  AH, 35H   ; функция получения вектора возвращает значение
+;	вектора прерывания для INT (AL); то есть, загружает в BX 0000:[AL*4]
+	MOV  AL, 08H   ; номер вектора (вектор который мы будем получать)
+	INT  21H   ;(вызывает функцию 35h для вектора 08h)
+	MOV  KEEP_IP, BX  ; запоминание смещения
+	MOV  KEEP_CS, ES  ; и сегмента
+	;Вектор прерывания — закреплённый за устройством номер, который идентифицирует
+	;соответствующий обработчик прерываний. Векторы прерываний объединяются в таблицу векторов 
+	;прерываний, содержащую адреса обработчиков прерываний. Местоположение таблицы 
+	;зависит от типа и режима работы процессора.
+	
+	
+	; Установка вектора прерывания
+	PUSH DS
+	MOV  DX, OFFSET SUBR_INT ; смещение для процедуры в DX  
+	MOV  AX, SEG SUBR_INT    ; сегмент процедуры
+	MOV  DS, AX          ; помещаем в DS
+	MOV  AH, 25H         ; функция установки вектора
+	MOV  AL, 08H         ; номер вектора
+	INT  21H             ; меняем прерывание
+	POP  DS
+
+	int 08H; на всякий вывод в консоль отдельно от отладчика
+
+	; Восстановление изначального вектора прерывания (можно закомментить)
+	CLI
+	Сбрасывается флаг IF
+	;Комментарий:	Команда CLI очищает флаг IF.
+ ;На другие флаги или регистры она не влияет.
+ ;Внешние прерывания не распознаются в конце 
+ ;команды CLI и начиная с этого момента до установки флага прерываний.
+
+	PUSH DS
+	MOV  DX, KEEP_IP ; тут сохранен предыдущий ip 
+	MOV  AX, KEEP_CS ;код сегмент
+	MOV  DS, AX
+	MOV  AH, 25H 
+	MOV  AL, 08H
+	INT  21H          ; восстанавливаем вектор
+	POP  DS
+	STI
+	
+	MOV AH, 4Ch                          
+	INT 21h
+Main      ENDP
 CODE ENDS
-	END Main
+	END Main 
