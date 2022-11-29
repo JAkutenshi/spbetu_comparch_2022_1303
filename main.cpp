@@ -69,10 +69,11 @@ int main() {
 	auto numbers = new int[N];
 	random_device rd;
 	mt19937 generator(rd());
-	uniform_int_distribution<> dist(X_min, X_max);
+	normal_distribution<> dist(0.05,1.3);
 	for (int i = 0; i < N; i++) {
-		numbers[i] = dist(generator);
-		cout << numbers[i] << " ";
+		int a = dist(generator);
+		if (a >= X_min && a <= intervals[N_int])
+			numbers[i] = int(a);
 	}
 	cout << endl;
 
@@ -81,7 +82,6 @@ int main() {
 	for (int i = 0; i < N_int; i++) {
 		final_answer[i] = 0;
 	}
-
 	func(intervals, N_int, N, numbers, final_answer);
 
 	ofstream file("output.txt");
@@ -93,7 +93,6 @@ int main() {
 		file << str_res;
 		cout << str_res;
 	}
-
 	system("Pause");
 	return 0;
 }
