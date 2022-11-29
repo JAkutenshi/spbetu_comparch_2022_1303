@@ -76,6 +76,6 @@ int main() {
     error_free_sources:
     free(numbers_array);
     free(intervals_array);
-    free(odd_array)
+    free(odd_array);
     return 1;
 };
