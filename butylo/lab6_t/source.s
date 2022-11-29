@@ -36,7 +36,7 @@ find_interval_index_end:
 	
 	cmp edx, 1
 	je odd
-	jump even
+	jmp even
 	
 odd:
 	inc dword ptr [r9 + rax * 4 - 4]
