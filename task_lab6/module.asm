@@ -15,23 +15,23 @@ func PROC C intervals: dword, N_int: dword, N: dword, numbers: dword, final_answ
 	mov eax,0
 
 	begin:
-		mov ebx,[esi + 4*eax]	;берем текущее число из массива сгенерированных чисел
+		mov ebx,[esi + 4*eax]	;Р±РµСЂРµРј С‚РµРєСѓС‰РµРµ С‡РёСЃР»Рѕ РёР· РјР°СЃСЃРёРІР° СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹С… С‡РёСЃРµР»
 		push esi
 		mov ecx, N_int
 							
 		mov esi, intervals
-		cmp [esi + 4*ecx],ebx   ;проверка на то, что число находится между правой границей и Xmax
-		jl ending               ;в случае если это так - пропускаем его
+		cmp [esi + 4*ecx],ebx   ;РїСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ, С‡С‚Рѕ С‡РёСЃР»Рѕ РЅР°С…РѕРґРёС‚СЃСЏ РјРµР¶РґСѓ РїСЂР°РІРѕР№ РіСЂР°РЅРёС†РµР№ Рё Xmax
+		jl ending               ;РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё СЌС‚Рѕ С‚Р°Рє - РїСЂРѕРїСѓСЃРєР°РµРј РµРіРѕ
 		dec ecx
 		border_begin:
-			cmp ebx, [esi + 4*ecx]  ;проверка на то что, взятое число больше следующей левой границы
-			jge print_result	;в случае если это так -  переходим к его записи
+			cmp ebx, [esi + 4*ecx]  ;РїСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ С‡С‚Рѕ, РІР·СЏС‚РѕРµ С‡РёСЃР»Рѕ Р±РѕР»СЊС€Рµ СЃР»РµРґСѓСЋС‰РµР№ Р»РµРІРѕР№ РіСЂР°РЅРёС†С‹
+			jge print_result	;РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё СЌС‚Рѕ С‚Р°Рє -  РїРµСЂРµС…РѕРґРёРј Рє РµРіРѕ Р·Р°РїРёСЃРё
 			dec ecx
 			jmp border_begin
 		
-		print_result:           ;запись числа в массив вывода
+		print_result:           ;Р·Р°РїРёСЃСЊ С‡РёСЃР»Р° РІ РјР°СЃСЃРёРІ РІС‹РІРѕРґР°
 
-			push esi            ;Подготовка массива сумм на интервалах
+			push esi            ;РџРѕРґРіРѕС‚РѕРІРєР° РјР°СЃСЃРёРІР° СЃСѓРјРј РЅР° РёРЅС‚РµСЂРІР°Р»Р°С…
 			push eax
 			mov esi, sum
 			mov eax,[esi +4*ecx]
@@ -49,10 +49,10 @@ func PROC C intervals: dword, N_int: dword, N: dword, numbers: dword, final_answ
 		ending:                  
 			pop esi
 			inc eax
-			cmp eax,N			 ;проверка на то что, весь массив чисел обработан	
+			cmp eax,N			 ;РїСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ С‡С‚Рѕ, РІРµСЃСЊ РјР°СЃСЃРёРІ С‡РёСЃРµР» РѕР±СЂР°Р±РѕС‚Р°РЅ	
 			jne begin
 
-	;Задание
+	;Р—Р°РґР°РЅРёРµ
 
 	mov esi,sum
 	mov edi,final_answer
@@ -98,7 +98,7 @@ func PROC C intervals: dword, N_int: dword, N: dword, numbers: dword, final_answ
 			cmp ecx,N_int
 			jne average_begin
 
-	;Конец задания
+	;РљРѕРЅРµС† Р·Р°РґР°РЅРёСЏ
 
 
 	pop edx
