@@ -1,4 +1,4 @@
-﻿#include <cstdio>
+#include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -70,12 +70,16 @@ int main() {
 	function(n_arr, NumRanDat, int_arr, NInt, res_arr);
 
 
+	std::cout << "Generated numbers:\n";
 	file << "Generated numbers:\n";
 	for (int i = 0; i < NumRanDat; ++i) {
+		std::cout << n_arr[i] << " ";
 		file << n_arr[i] << " ";
 	}
+	std::cout << "\n\nResults:\n";
 	file << "\n\nResults:\n";
 	for (int i = 0; i < NInt; ++i) {
+		std::cout << i + 1 << ". left border:" << int_arr[i] << "  numbers - " << res_arr[i] << "\n";
 		file << i + 1 << ". left border:" << int_arr[i] << "  numbers - " << res_arr[i] << "\n";
 	}
 
