@@ -19,6 +19,7 @@ find_interval_index_loop:
 	xor rax, rax
 
 find_interval_index_end:
+  mov rbx, rax
 	mov rax, rcx
 
 	pop rdi
@@ -28,16 +29,17 @@ find_interval_index_end:
 	cmp rax, 0
 	je continue_loop
 	
-	xor ebx, ebx
-	xor edx, edx
-	mov ebx, 2
-	
-	div ebx
-	xor eax, eax
-	
-	cmp edx, 1
-	je odd
+  push rdx
+
+  mov edx, ebx
+  and edx, 0x1
+  cmp edx, 0
+
+  pop rdx
+
+	jne odd
 	jmp even
+	
 	
 odd:
 	inc dword ptr [r9 + rax * 4 - 4]
