@@ -33,6 +33,7 @@ find_interval_index_end:
 	mov ebx, 2
 	
 	div ebx
+	xor eax, eax
 	
 	cmp edx, 1
 	je odd

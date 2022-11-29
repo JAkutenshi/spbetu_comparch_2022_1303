@@ -29,7 +29,6 @@ int main() {
 
     int *numbers_array = malloc(numbers * sizeof(int));
     int *intervals_array = malloc(intervals * sizeof(int));
-    int *odd_array = malloc(intervals * sizeof(int));
 
     printf("Enter left borders of intervals\n");
     char c;
@@ -47,6 +46,7 @@ int main() {
         numbers_array[i] = min_border + rand() % rand_max;
     }
 
+    int *odd_array = calloc(intervals, sizeof(int));
     int *resultArray = calloc(intervals, sizeof(int));
     processing_intervals(resultArray, numbers_array, intervals_array, numbers, intervals, odd_array);
 
@@ -73,9 +73,9 @@ int main() {
 
     error_free_result:
     free(resultArray);
+    free(odd_array);
     error_free_sources:
     free(numbers_array);
     free(intervals_array);
-    free(odd_array);
     return 1;
 };
