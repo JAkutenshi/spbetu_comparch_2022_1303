@@ -87,6 +87,7 @@ int main() {
 	delete[] n_arr;
 	delete[] int_arr;
 	delete[] res_arr;
+	delete[] res_even_numbers;
 
 	return 0;
 };
