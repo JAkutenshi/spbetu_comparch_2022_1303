@@ -201,7 +201,7 @@ MAIN PROC FAR
    	mov dx,offset decim
    	call writemsg
     
-   	mov ax,0f13h    ;!!! запись в AX
+   	mov ax,0f13h    ;!!! запись в АХ
    	mov di,offset sign
    	mov bx,'+'
    	cmp ax,0
