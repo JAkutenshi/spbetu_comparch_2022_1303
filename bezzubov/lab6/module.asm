@@ -11,43 +11,35 @@ func PROC C intervals: dword, N_int: dword, N: dword, numbers: dword, final_answ
 
     mov esi, numbers
 	mov edi, final_answer
-	mov eax,0
+	mov eax, 0
     
 
 checking_loop:
-    
-    mov ebx, [esi+4*eax]
+	mov ebx, 0
+	iter:
+		cmp ebx, N_int
+		jge out_cur_iter
+		mov ecx, [esi + 4*eax]
+		mov edi, intervals
+		cmp ecx, [edi+4*ebx]
+		jl out_cur_iter
+		inc ebx
+		jmp iter
 
-    push esi
-    mov ecx, 1
+	out_cur_iter:
+		dec ebx
+		mov edi, final_answer
+		mov ecx, [edi+4*ebx]
+		inc ecx
+		mov [edi+4*ebx], ecx
 
-    mov esi, intervals
-
-new_inter:
-    cmp ebx, [esi + 4*ecx]
-    jge next_inter
-
-    sub ecx, 1
-    
-    push ebx
-    mov ebx, [edi + 4*ecx]
-    inc ebx
-    mov [edi + 4*ecx], ebx
-    pop ebx
-
-    inc eax
-    cmp eax, N
-    pop esi
-    jl checking_loop
-    jmp exit
-
-next_inter:
-    inc ecx
-    cmp ecx, N_int
-    jle new_inter
-    inc eax
-    pop esi
-    jmp checking_loop
+	next_number:
+		inc eax
+		cmp eax, N
+		jg exit
+	
+jmp checking_loop
+	
 
 exit:
     pop edx
@@ -58,4 +50,4 @@ exit:
 	pop esi
 ret
 func ENDP
-END 
+END
