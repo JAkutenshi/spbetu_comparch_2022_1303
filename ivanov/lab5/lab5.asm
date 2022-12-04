@@ -77,25 +77,25 @@ time:
 	push CX
 	push DX
 	
-	mov ah, 2Ah     ; Получение системной даты [DD in dl , MM in dh, YYYY in cx]
+	mov ah, 2Ah     ; РџРѕР»СѓС‡РµРЅРёРµ РґР°С‚С‹  [DD in dl , MM in dh, YYYY in cx]
         int 21h
-	mov al, dl ; день
+	mov al, dl ; Р”РµРЅСЊ
 	call print
-	call print_point ; символ точки
-	mov al, dh ; месяц
+	call print_point ; РЎРёРјРІРѕР» С‚РѕС‡РєРё
+	mov al, dh ; РњРµСЃСЏС†
 	call print
 
-	call print_space ; пробел между DD.MM и hh:mm:ss
+	call print_space ; РџСЂРѕР±РµР» РјРµР¶РґСѓ DD.MM Рё hh:mm:ss
 
-	mov ah, 2ch ; Получение системной даты  [HH in ch, MM in cl, SS in dh]
+	mov ah, 2ch ; РџРѕР»СѓС‡РµРЅРёРµ РґР°С‚С‹ [HH in ch, MM in cl, SS in dh]
 	int 21h
-	mov al, ch ; часы
+	mov al, ch ; Р§Р°СЃС‹
 	call print 
 	call print_double
-	mov al, cl ; минуты
+	mov al, cl ; РњРёРЅСѓС‚С‹
 	call print
 	call print_double
-	mov al, dh ;секунды
+	mov al, dh ; РЎРµРєСѓРЅРґС‹
 	call print
 	
 	pop DX
