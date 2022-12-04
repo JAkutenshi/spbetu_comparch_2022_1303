@@ -12,71 +12,78 @@ DATA ENDS
 CODE SEGMENT
 ASSUME CS:CODE, DS:DATA, SS:AStack
 
-double proc
-	push AX
-	push DX
-	mov DL,':'
-	mov AH, 02h
-	int 21h
-	pop DX
-	pop AX	
-	ret
-double endp
 
+  Text PROC
+    push dx
+    push cx
 
-print proc
-	push AX
-	push DX
-	push BX
+    mov bx, 16 
+    sub cx, cx 
 
-        aam ; AH = AL//10
-        mov BX, AX
-        mov ah, 02h        
-        
-        mov DL, BH
-        add DL, '0'
-        int 21h
-        
-        mov DL, BL
-        add DL, '0'
-        int 21h
-	
-	pop BX
-	pop DX
-	pop AX
-	ret
-print endp
+a1:
+    sub dx, dx
+    div bx 
+    push dx
+    add cx, 1 
+    test ax, ax 
+    jnz a1
+
+    mov ah, 2 
+    sub bx, bx
+
+a2:
+    pop dx
+    add dl, '0'
+
+    int 21h
+    loop a2
+
+    pop cx
+    pop dx
+    ret
+Text endp
 
 GetTime PROC FAR
 
 	cmp  FLAG, 0
 	jne  func_end
 	mov  FLAG, 1
-		
-	push AX    ; сохранение изменяемых регистров
-	push CX ;
-	push DX; 
-	push BX
-	mov ah, 2ch 
-
-
-	int 21h
 	
-	mov al, ch
-	call print
-	call double
-	mov al, cl
-	call print
-	call double
-	mov al, dh
-	call print
-	
-	pop BX
-	pop DX
-	pop CX
-	pop AX   ; восстановление регистров
 
+    push ax
+    push dx
+    push cx
+    push bx
 
+    mov ah,02h
+    int 1Ah
+    mov ah, 0 
+    mov al, ch
+    call Text
+    
+    push dx
+    mov dx, ':'
+    mov ah, 2
+    int 21h
+    sub ax, ax
+    
+    mov al, cl
+    call Text
+    mov dx, ':'
+    mov ah, 2
+    int 21h
+    sub ax, ax
+    
+    pop dx
+    mov al, dh
+    call Text
+    mov ah, 2
+    int 21h
+
+    pop bx
+    pop cx
+    pop dx
+    pop ax
 	func_end:
 	   	mov al, 20h
 	   	out 20h, al
