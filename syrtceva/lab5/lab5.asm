@@ -14,17 +14,20 @@ my_code    segment
 
 my_interruption proc far
     push ax
-    push dx
-    mov  dx, ax
+    push cx
 
+    mov  al, 10110110b
+    out  43h, al
     in   al, 61h                      ; Информация о динамике
     push ax
     or   al, 00000011b
     out  61h, al                      ; Включить динамик
-    mov  al,  dl
+    mov  al, dl
     out  42h, al                      ; Включить таймер для подачи сигналов на динамик
-    mov  cx, delay
+    mov  al, dh
+    out  42h, al
 
+    mov  cx, delay
 ; Задержка
 sound_duration:
     push cx
@@ -39,7 +42,7 @@ sound_duration:
     and  al, 11111100b
     out  61h, al                      ; Выключить динамик
     
-    pop  dx
+    pop  cx
     pop  ax
 
 	mov  al, 20h
@@ -71,28 +74,53 @@ main proc far
     mov  al, 16h                    ; номер вектора
     int  21h                        ; меняем прерывание
     pop  ds
+
+    push dx
+    mov  dx, 1000
     
-    input_loop:                     ; ждать нажатие клавиши
-     in   al, 60h                   ; считать информацию из порта ввода клавиатуры
-     cmp  al, 30h                   ; 30h -- b
-     jne  input_loop
-     mov al, 100
-     int  16h
+    input_symb_loop:                   ; ждать нажатие клавиши
+        in   al, 60h                   ; считать информацию из порта ввода клавиатуры
+        cmp  al, 01h                   
+        je   exit
+        cmp  al, 4Eh
+        je   increase
+        cmp  al, 4Ah
+        je   decrease
+        jmp  input_symb_loop
 
-	cli                             ; Сброс флага прерывания
+    increase:
+        cmp  dx, 32668
+        jge   default
+        add  dx, 100
+        int  16h
+        jmp  input_symb_loop
 
-	push ds
-	mov  dx, cached_ip
-	mov  ax, cached_cs
-	mov  ds, ax
-	mov  ah, 25h
-	mov  al, 16h
-	int  21h                        ; восстанавливаем старый вектор прерывания
-	pop  ds
+    decrease:
+        cmp  dx, 100
+        jle  default
+        sub  dx, 100
+        int  16h
+        jmp  input_symb_loop
 
-	sti                             ; Установка флага прерывания
+    default:
+        mov  dx, 1000
+        int  16h
+        jmp  input_symb_loop
 
-    ret
+    exit:
+        pop  dx
+        
+	    cli                             ; Сброс флага прерывания
+	    push ds
+	    mov  dx, cached_ip
+	    mov  ax, cached_cs
+	    mov  ds, ax
+	    mov  ah, 25h
+	    mov  al, 16h
+	    int  21h                        ; восстанавливаем старый вектор прерывания
+	    pop  ds
+	    sti                             ; Установка флага прерывания
+        ret
 
 main endp
 
