@@ -10,33 +10,57 @@ DATA ENDS
 CODE SEGMENT
 ASSUME CS:CODE, DS:DATA, SS:AStack
 
-int_to_string PROC
-   	push AX 
-   	push DX
-   	push BX
-   	push CX
-   	xor CX, CX 
-   	mov BX, 10
-divide:
-    xor DX,DX	
-    div BX	
-    add DL, '0' 
-    push DX	
-    inc CX	
-    test AX, AX 
-    jnz divide
-    mov ah, 02h
-    
-console_log:
-    pop DX	
-    int 21h
-    loop console_log	
-    pop CX
-    pop BX
-    pop DX
-    pop AX
-    ret
-int_to_string endp
+print_point proc 
+	push AX
+	push DX
+	mov DL,'.'
+	mov AH, 02h
+	int 21h
+	pop DX
+	pop AX	
+	ret
+print_point endp
+
+print_double proc
+	push AX
+	push DX
+	mov DL,':'
+	mov AH, 02h
+	int 21h
+	pop DX
+	pop AX	
+	ret
+print_double endp
+
+print_space proc
+	push AX
+	push DX
+	mov DL,' '
+	mov AH, 02h
+	int 21h
+	pop DX
+	pop AX	
+	ret
+print_space endp
+
+print proc
+	push AX
+	push DX
+	push BX
+        aam
+        mov BX, AX
+        mov ah, 02h        
+        mov DL, BH
+        add DL, '0'
+        int 21h
+        mov DL, BL
+        add DL, '0'
+        int 21h
+	pop BX
+	pop DX
+	pop AX
+	ret
+print endp
 
 get_time PROC FAR
        jmp time
@@ -49,24 +73,42 @@ time:
 	mov SP, SEG Stack
 	mov SS, SP
 	mov SP, offset time
-	push AX
+	push AX    
 	push CX
 	push DX
-	mov AH, 00h	
-	int 1Ah	
-	mov AX, CX
-	call int_to_string
-	mov AX, DX
-	call int_to_string
+	
+	mov ah, 2Ah     ; ѕолучение системной даты [DD in dl , MM in dh, YYYY in cx]
+        int 21h
+	mov al, dl ; день
+	call print
+	call print_point ; символ точки
+	mov al, dh ; мес€ц
+	call print
+
+	call print_space ; пробел между DD.MM и hh:mm:ss
+
+	mov ah, 2ch ; ѕолучение системной даты  [HH in ch, MM in cl, SS in dh]
+	int 21h
+	mov al, ch ; часы
+	call print 
+	call print_double
+	mov al, cl ; минуты
+	call print
+	call print_double
+	mov al, dh ;секунды
+	call print
+	
 	pop DX
 	pop CX
-	pop AX   
+	pop AX 
 	mov SS, temp_ss 
 	mov SP, temp_sp
+
 	mov AL, 20H
 	out  20H,AL
 	iret
 get_time ENDP
+
 
 Main	PROC  FAR
 	push DS
