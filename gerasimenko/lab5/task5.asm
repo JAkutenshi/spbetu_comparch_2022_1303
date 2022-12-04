@@ -5,8 +5,9 @@ AStack ENDS
 DATA SEGMENT
         KEEP_CS DW 0
         KEEP_IP DW 0
+        FLAG    DB 0
 DATA ENDS
-
+	
 
 CODE SEGMENT
 ASSUME CS:CODE, DS:DATA, SS:AStack
@@ -47,10 +48,15 @@ print proc
 print endp
 
 GetTime PROC FAR
+
+	cmp  FLAG, 0
+	jne  func_end
+	mov  FLAG, 1
+		
 	push AX    ; сохранение изменяемых регистров
 	push CX ;
 	push DX; 
-	
+	push BX
 	mov ah, 2ch 
 
 
@@ -65,15 +71,16 @@ GetTime PROC FAR
 	mov al, dh
 	call print
 	
+	pop BX
 	pop DX
 	pop CX
 	pop AX   ; восстановление регистров
 
 
-
-	mov AL, 20H
-	out  20H,AL
-	iret
+	func_end:
+	   	mov al, 20h
+	   	out 20h, al
+		iret
 GetTime ENDP
 
 
@@ -85,14 +92,14 @@ Main	PROC  FAR
 	mov DS, AX
 	
 	
-	
-	
-	
 	mov AH,35h ; дать вектор прерывания
 	mov AL,08h ; номер вектора
 	int 21h    ; вызов -> выход: ES:BX = адрес обработчика прерывания
 	mov KEEP_IP, BX ; запоминание смещения
 	mov KEEP_CS, ES ; запоминание сегмента
+	
+
+	
 	
 	push DS
 	mov DX, offset GetTime	; смещение для процедуры
@@ -103,13 +110,13 @@ Main	PROC  FAR
 	int 21h 	; установить вектор прерывания на указанный адрес нового обработчика
 	pop DS
 	
+	
 
-	MOV     CX, 0FH
-	MOV     DX, 4240H
-	MOV     AH, 86H
-	INT     15H
-	
-	
+	mov al, 0
+	mov cx, 002Eh 
+	mov dx, 0000h
+	mov ah, 86h
+	int 15h
 
 	CLI 	; сбрасывает флаг прерывания IF
 	push DS
@@ -118,11 +125,14 @@ Main	PROC  FAR
 	mov DS, AX
 	mov AH, 25h
 	mov AL, 08h
+	
 	int 21h
-	pop DS
 	STI 
+	
+	mov ah, 4ch
+	int 21h 
 
-	ret
+
 Main ENDP
 CODE ENDS
 	END Main
