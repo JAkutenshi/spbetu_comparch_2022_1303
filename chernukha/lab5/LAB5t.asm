@@ -8,7 +8,7 @@ data    segment
     keep_cs dw 0    
     keep_ip dw 0
     string db ?,?,?,?,?,?,?,?,0Dh,'$'
-    hellostr db "Enter e for time, esc for exit$"
+    hellostr db "Enter e for time, esc for exit", 0AH, '$'
 data    ends
 
 code    segment
@@ -33,7 +33,6 @@ a1:
 a2:
     pop dx
     add dl, '0'
-    ;mov word ptr string[bx] , dl
 
     int 21h
     ;add bx, 1
@@ -98,41 +97,35 @@ main proc far
     mov  keep_ip, bx 
     mov  keep_cs, es
 
-    push ds                         
-    mov  dx, offset SUBR_INT 
-    mov  ax, seg SUBR_INT    
-    mov  ds, ax                    
-    mov  ah, 25h                    
-    mov  al, 16h                    
-    int  21h                        
-    pop  ds
-    
     jmp enter_key
      
-    greeting: 
+greeting: 
 
-     mov ah, 9
-     mov dx, offset hellostr
-     int 21h
-     sub ax, ax  
-   ;  jmp      
-
-      enter_key:
-      ;mov ah, 0h
-      ;int 16h
-      
-      in   al, 60h 
-      cmp  al, 1h
-      je   endprog                  
-      cmp  al,12h                   
-      je  startint
+      mov ah, 9
+      mov dx, offset hellostr
+      int 21h
+      sub ax, ax  
      
-      ;cmp al, 0h
+enter_key:
+      mov ah, 7h
+      int 21h
+      
+      cmp  al, 1bh
+      je   endprog                  
+      cmp  al, 'e'                   
+      je  startint
       jmp greeting
-      ;jmp enter_key
      
 startint:
-     int  16h
+      push ds                         
+      mov  dx, offset SUBR_INT 
+      mov  ax, seg SUBR_INT    
+      mov  ds, ax                    
+      mov  ah, 25h                    
+      mov  al, 16h                    
+      int  21h                        
+      pop  ds
+      int  16h
 
 
     endprog:
