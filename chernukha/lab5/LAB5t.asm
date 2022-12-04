@@ -12,7 +12,7 @@ data    segment
 data    ends
 
 code    segment
-Timer PROC
+ToText PROC
     push dx
     push cx
 
@@ -35,13 +35,12 @@ a2:
     add dl, '0'
 
     int 21h
-    ;add bx, 1
     loop a2
 
     pop cx
     pop dx
     ret
-Timer endp
+ToText endp
 
 SUBR_INT proc far
     push ax
@@ -53,7 +52,7 @@ SUBR_INT proc far
     int 1Ah
     mov ah, 0 
     mov al, ch
-    call Timer
+    call ToText
     
     push dx
     mov dx, ':'
@@ -62,7 +61,7 @@ SUBR_INT proc far
     sub ax, ax
     
     mov al, cl
-    call Timer
+    call ToText
     mov dx, ':'
     mov ah, 2
     int 21h
@@ -70,7 +69,7 @@ SUBR_INT proc far
     
     pop dx
     mov al, dh
-    call Timer
+    call ToText
     mov ah, 2
     int 21h
 
