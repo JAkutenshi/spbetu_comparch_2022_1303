@@ -82,10 +82,29 @@ loop_int:
     push ax
     mov ah, 1h
     int 21H
+
+    cmp al, "-"
+    je minus
+
+    cmp al, "+"
+    je plus
+
     cmp al, 1bh
+    
     pop ax
     jnz loop_int
     jmp exit
+
+plus:
+    add di, 1000
+    pop ax
+    jmp loop_int
+
+minus:
+    sub di, 1000
+    pop ax
+    jmp loop_int
+
 
 exit:
     CLI
