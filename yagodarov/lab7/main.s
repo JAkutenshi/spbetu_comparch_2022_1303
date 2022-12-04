@@ -22,10 +22,10 @@
 #; Output:
 #; number_str -- number to oct string
 make_str:
-  push cx
   push rdi
   std
 
+  xor  rcx, rcx
   mov  rdi, offset number_str
   add  rdi, 10
 
@@ -72,7 +72,6 @@ dx_loop:
 
   cld
   pop  rdi
-  pop  cx
 
   ret
 
@@ -229,6 +228,7 @@ _start:
 #; Display dx:ax registers
   call display_dx_ax
 
+#; Remove sign
   rcl  dx, 1
   jnc  positive
   rcr  dx, 1
@@ -239,6 +239,45 @@ positive:
   shr  dx, 1
 
 make_number_str:
+  call make_str
+
+#; Print oct number
+  mov  rax, 1
+  mov  rdi, 1
+  mov  rsi, offset number_str
+  mov  rdx, number_str_len
+  syscall
+
+#; Print new line
+  mov  rax, 1
+  mov  rdi, 1
+  mov  rsi, offset newline_str
+  mov  rdx, 1
+  syscall
+
+#; Get value from str to dx:ax
+  mov  rsi, offset number_str
+  call get_number
+
+#; Display dx:ax registers
+  call display_dx_ax
+
+#; Print new line
+  mov  rax, 1
+  mov  rdi, 1
+  mov  rsi, offset newline_str
+  mov  rdx, 1
+  syscall
+
+#; Insert number
+  mov  edx, input_number
+
+  mov  ax, dx
+  shr  edx, 16
+
+#; Display dx:ax registers
+  call display_dx_ax
+
   call make_str
 
 #; Print oct number
