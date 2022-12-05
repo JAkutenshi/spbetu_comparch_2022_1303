@@ -3,13 +3,12 @@ AStack  SEGMENT STACK
 AStack  ENDS
 
 DATA    SEGMENT
-	DECIM DB 'Decimal number = ', '$'
-	OCT DB 'Octal number = ', '$'
-	NUM_STR DB ' ', 0ah, '$'
-    DEC_STR DB ' ', '$'
+	HEX_INFO DB 'Hex number = ', '$'
+	OCT_INFO DB 'Octal number = ', '$'
+    HEX_STR DB ' ', '$'
     OCT_STR DB ' ', '$'
     SIGN DB '  ', '$'
-	NUMBER DW 01Ah
+	NUMBER DW 0FFF1h
 DATA    ENDS
 
 CODE    SEGMENT
@@ -30,7 +29,7 @@ DIGITS_PROC PROC NEAR
 	cmp cx,0
 	je digits_end
 	
-	mov bx,0Ah
+	mov bx,08h
 	digits_processing:
 		xor dx,dx
 		mul bx
@@ -75,41 +74,7 @@ REVERSE PROC NEAR ; переворачиваем строку с числом
 	ret
 REVERSE ENDP
 
-
-NUM_TO_STR_10 PROC NEAR
-	pop cx
-	
-	pop di  ;строка в di
-	pop ax
-	
-	push cx
-	push bx
-	
-	mov cx,0Ah
-	mov bx,0
-	processing:
-   		xor dx,dx
-   		div cx
-   		add dx,'0'
-   		mov [di+bx],dx
-		add bx,2
-   		cmp ax,0
-   		jne processing
-   	mov dx,'$'
-   	mov [di+bx],dx
-	sub bx,2
-	
-	pop ax
-	pop cx
-	
-	push bx ;длина строки
-	
-	push cx
-	ret
-NUM_TO_STR_10 ENDP
-
-
-STR_10_TO_NUM PROC NEAR
+STR_8_TO_NUM PROC NEAR
 	pop cx
 	
 	pop di  ; строка
@@ -137,7 +102,7 @@ STR_10_TO_NUM PROC NEAR
 	
 	push cx
 	ret
-STR_10_TO_NUM ENDP
+STR_8_TO_NUM ENDP
 
 
 NUM_TO_STR_8 PROC NEAR
@@ -174,6 +139,46 @@ NUM_TO_STR_8 PROC NEAR
 	ret
 NUM_TO_STR_8 ENDP
 
+NUM_TO_STR_16 PROC NEAR
+	pop cx
+	
+	pop di  
+	pop dx
+	
+	push cx
+	push ax
+
+	sub bx,bx
+   	mov ax,dx
+   	mov cx, 10h
+   	hex_begin:
+   		sub dx,dx
+   		div cx
+   		add dx,'0'
+   		cmp dx,'9'
+   		jle end_hex
+   		add dx,7
+   		
+
+   		end_hex:
+   		mov [di+bx],dx
+   		add bx,2
+   		cmp ax,0
+   		jne hex_begin
+   	mov cx,'$'
+   	mov [di+bx],cx
+   	sub bx,2
+   	
+   	pop ax
+	pop cx
+	
+	push bx ;длина строки
+	
+	push cx
+   	
+	ret
+NUM_TO_STR_16 ENDP
+
 
 MAIN PROC FAR
     push ds
@@ -182,10 +187,10 @@ MAIN PROC FAR
     mov ax, DATA
     mov ds, ax
     
-   	mov dx,offset decim
+   	mov dx,offset oct_info
    	call writemsg
-        
-	mov ax, number
+    
+   	mov ax,number   
    	mov di,offset sign
    	mov bx,'+'
    	cmp ax,0
@@ -194,7 +199,7 @@ MAIN PROC FAR
 	neg ax
    	
    	set_sign:
-		push bx
+		push bx ; знак на стек
 		mov [di],bx
    	
    	push ax
@@ -202,54 +207,53 @@ MAIN PROC FAR
    	call writemsg
    	pop ax
    	
-   	mov di,offset dec_str
+   	mov di,offset oct_str
    	push ax   
-   	push di ; кладем аргументы для функции на стек
-   	call num_to_str_10
+   	push di
+   	call num_to_str_8
    	pop bx
    	
    	push bx ; кладем длину строки на стек ----
    	
-   	mov di,offset dec_str
-   	push bx ; на стек длина строки, чтобы использовать в функции
+   	mov di,offset oct_str
+   	push bx 
    	push di 
    	call reverse
    	
    	
-   	mov dx,offset dec_str
-   	call writemsg
-   	mov dx,offset num_str
+   	mov dx,offset oct_str
    	call writemsg
    	
+	;---------------------------------------------
+	
    	pop bx ; достаем длину строки со стека ----
    	
-   	mov di,offset dec_str
+   	mov di,offset oct_str
    	push bx
    	push di
-   	call str_10_to_num
-   	pop dx ;получил регистр
+   	call str_8_to_num
+   	pop dx ;перевели в число и поместили в dx
    	
    	
    	pop bx
    	cmp bx,'-'
    	jne skip
    	neg dx
-	
    	skip:
-	
-   	mov di,offset oct_str
+   	
+   	mov di,offset hex_str
    	push dx
    	push di
-   	call num_to_str_8
+   	call num_to_str_16
    	pop bx
    	
-   	push bx 
+   	push bx  
    	push di 
    	call reverse
    	
-   	mov dx,offset oct
+   	mov dx,offset hex_info
    	call writemsg
-   	mov dx,offset oct_str
+   	mov dx,offset hex_str
    	call writemsg
    	
 	ret
