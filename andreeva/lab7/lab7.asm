@@ -8,7 +8,7 @@ DATA    SEGMENT
     HEX_STR DB ' ', '$'
     OCT_STR DB ' ', '$'
     SIGN DB '  ', '$'
-	NUMBER DW 0FFF1h
+	NUMBER DW 0Ah
 DATA    ENDS
 
 CODE    SEGMENT
