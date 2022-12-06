@@ -57,5 +57,6 @@ int main() {
     free(arr);
     free(nums);
     free(res);
+    free(sums);
     return 0;
 }
