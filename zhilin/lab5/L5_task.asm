@@ -2,7 +2,7 @@ DATA SEGMENT
     KEEP_CS dw 0
     KEEP_IP dw 0
 	MyString db 10, 13, 'TLOU$'
-	OutNum dw 0
+	OutNum db 0
 	EndMessage db 10, 13, 'End int$'
 DATA ENDS
 
@@ -22,7 +22,8 @@ SUBR_INT PROC FAR
 	push bx
 	push dx
 	
-	mov cx, OutNum
+	mov cx, 0
+	mov cl, OutNum
 	str_out:
 		cmp cx, 0
 		je stop_output
