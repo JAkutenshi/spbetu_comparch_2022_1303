@@ -10,12 +10,12 @@ int main() {
     system("chcp 1251 > nul");
     setlocale(LC_CTYPE, "rus");
 
-    std::cout << "Введите значение х...\n";
+    std::cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ С…...\n";
     std::cin >> x;
 
 	__asm{
 
-        ; Возведение e^x
+        ; Р’РѕР·РІРµРґРµРЅРёРµ e^x
         fld qword ptr[x]
         fld qword ptr[e]
         fyl2x
@@ -30,20 +30,20 @@ int main() {
         fstp st(1)
         fst qword ptr[res]
 
-        ; Деление 1 / e^x
+        ; Р”РµР»РµРЅРёРµ 1 / e^x
         fld1
         fdiv qword ptr[res]
 
-        ; Получение e^x + 1 / (e^x)
+        ; РџРѕР»СѓС‡РµРЅРёРµ e^x + 1 / (e^x)
         fadd st, st(1)
 
-        ; Получение cosh(x)
+        ; РџРѕР»СѓС‡РµРЅРёРµ cosh(x)
         fdiv qword ptr[two]
 
-        ; Запись ответа
+        ; Р—Р°РїРёСЃСЊ РѕС‚РІРµС‚Р°
         fstp qword ptr[res]
 	}
-    printf("Вычисленное значение cosh(x): %lf\n", res);
-    printf("Абсолютная погрешность вычисления: %.20lf\n", abs(res - cosh(x)));
+    printf("Р’С‹С‡РёСЃР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ cosh(x): %lf\n", res);
+    printf("РђР±СЃРѕР»СЋС‚РЅР°СЏ РїРѕРіСЂРµС€РЅРѕСЃС‚СЊ РІС‹С‡РёСЃР»РµРЅРёСЏ: %.20lf\n", abs(res - cosh(x)));
 	return 0;
 }
