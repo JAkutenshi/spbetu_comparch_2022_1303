@@ -7,9 +7,9 @@ git fetch Illy-GIS           # Жилин Илья
 git fetch Arthur410          # Иванов Артур                 
 git fetch Popug-s-catcher    # Иевлев Егор                  
 git fetch obsessedwithmoney  # Карагезов Савелий            
-git fetch Pac1fik            # Кольцов Алексей              
+#git fetch Pac1fik            # Кольцов Алексей              
 git fetch Ajems              # Коренев Данил                
-git fetch korenoff           # Коренченко Иван              
+#git fetch korenoff           # Коренченко Иван              
 git fetch polinaKoroleva05   # Королева Полина              
 git fetch NikKropotov        # Кропотов Никита              
 git fetch KuznetsovNick      # Кузнецов Николай             
@@ -18,9 +18,9 @@ git fetch Lifeestyleee       # Мусатов Дмитрий
 git fetch YaroslavNasonov    # Насонов Ярослав              
 git fetch Alikohd            # Попандопуло Александр        
 git fetch KirillSamokhin     # Самохин Кирилл               
-git fetch Sevazx129          # Смирнов Всеволод             
+#git fetch Sevazx129          # Смирнов Всеволод             
 git fetch SyrtcevaDaria      # Сырцева Дарья                
-git fetch TokGrin            # Токун Григорий               
+#git fetch TokGrin            # Токун Григорий               
 git fetch AlinaMoon123       # Хабибуллина Алина            
 git fetch Olesya-Khulap      # Хулап Олеся                  
 git fetch homin12            # Чернуха Владимир             
