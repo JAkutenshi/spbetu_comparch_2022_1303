@@ -44,12 +44,12 @@ Its endp
 
 Time PROC FAR
        jmp time
-	KEEP_SS DW 0
-	KEEP_SP DW 0
+	MEM_SS DW 0
+	MEM_SP DW 0
 	Stack DB 50 dup(" ")
 time:
-	mov KEEP_SS, SS
-	mov KEEP_SP, SP
+	mov MEM_SS, SS
+	mov MEM_SP, SP
 	mov SP, SEG Stack
 	mov SS, SP
 	mov SP, offset time
@@ -70,8 +70,8 @@ time:
 	pop CX
 	pop AX   ; восстановление регистров
 
-	mov SS, KEEP_SS 
-	mov SP, KEEP_SP
+	mov SS, MEM_SS 
+	mov SP, MEM_SP
 
 	mov AL, 20H
 	out  20H,AL
@@ -89,12 +89,12 @@ Main	PROC  FAR
 	mov AH,35h ; дать вектор прерывания
 	mov AL,60h ; номер вектора
 	int 21h    ; вызов -> выход: ES:BX = адрес обработчика прерывания
-	mov KEEP_IP, BX ; запоминание смещения
-	mov KEEP_CS, ES ; запоминание сегмента
+	mov MEM_IP, BX ; запоминание смещения
+	mov MEM_CS, ES ; запоминание сегмента
 
 	push DS
-	mov DX, offset GetTime	; смещение для процедуры
-	mov AX, seg GetTime	; сегмент процедуры
+	mov DX, offset Time	; смещение для процедуры
+	mov AX, seg Time	; сегмент процедуры
 	mov DS, AX
 	mov AH, 25h 	; функция установки вектора
 	mov AL, 60h 	; номер вектора
@@ -105,8 +105,8 @@ Main	PROC  FAR
 	
 	CLI 	; сбрасывает флаг прерывания IF
 	push DS
-	mov DX, KEEP_IP
-	mov AX, KEEP_CS
+	mov DX, MEM_IP
+	mov AX, MEM_CS
 	mov DS, AX
 	mov AH, 25h
 	mov AL, 60h
