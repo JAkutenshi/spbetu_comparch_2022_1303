@@ -5,7 +5,7 @@
 const int len = 81;
 char input[len];
 char output[len];
-
+//
 int main()
 {
     system("chcp 1251 > nul");
