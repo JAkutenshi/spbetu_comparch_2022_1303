@@ -1,0 +1,146 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
+                                                             Page     1-1
+
+
+ 0000				AStack  SEGMENT STACK
+ 0000  0400[			    DB 1024 DUP(?)
+	   ??			
+			 ]	
+				
+ 0400				AStack  ENDS
+				
+ 0000				DATA    SEGMENT
+ 0000  0000			    KEEP_CS DW 0    
+ 0002  0000			    KEEP_IP DW 0
+ 0004  48 65 6C 6C 6F 21		MESSAGE DB 'Hello!', 0dh, 0ah, '$'
+       0D 0A 24			
+ 000D  65 6E 64 0D 0A 24		END_MES DB 'end', 0dh, 0ah, '$'
+ 0013				DATA    ENDS
+				
+ 0000				CODE    SEGMENT
+				    ASSUME CS:CODE, DS:DATA, SS:AStack
+				
+ 0000				WriteMsg  PROC  NEAR
+ 0000  B4 09			          mov AH, 9
+ 0002  CD 21			          int 21h 
+ 0004  C3			          ret
+ 0005				WriteMsg  ENDP
+				
+ 0005				FUNC PROC FAR
+ 0005  50					push ax
+ 0006  53					push bx
+ 0007  51					push cx
+ 0008  52					push dx
+ 0009  1E					push ds
+						
+ 000A  BA 0004 R				mov dx, OFFSET MESSAGE
+ 000D  B9 0004					mov cx, 4
+ 0010						lp:
+ 0010  E8 0000 R					call WriteMsg
+ 0013  E2 FB						loop lp
+							
+ 0015  B0 00					mov al, 0
+ 0017  B4 86					mov	ah,86h
+ 0019  33 C9					xor	cx,cx
+ 001B  BA 2710					mov	dx,10000
+ 001E  CD 15					int	15h
+						
+ 0020  BA 000D R				mov dx, OFFSET END_MES
+ 0023  E8 0000 R				call WriteMsg 
+						
+ 0026  1F					pop ds
+ 0027  5A					pop dx
+ 0028  59					pop cx
+ 0029  5B					pop bx
+ 002A  58					pop ax
+ 002B  B0 20				   	mov al, 20h
+ 002D  E6 20				   	out 20h, al
+ 002F  CF					iret
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
+                                                             Page     1-2
+
+
+ 0030				FUNC ENDP
+				
+ 0030				MAIN PROC FAR
+ 0030  1E			    push ds
+ 0031  2B C0				sub ax, ax
+ 0033  50				push ax
+ 0034  B8 ---- R		    mov ax, DATA
+ 0037  8E D8			    mov ds, ax
+				    
+ 0039  B4 35			    mov ah, 35h 
+ 003B  B0 08			    mov al, 08h 
+ 003D  CD 21			    int 21h
+ 003F  89 1E 0002 R		    mov KEEP_IP, bx 
+ 0043  8C 06 0000 R		    mov KEEP_CS, es 
+				    
+ 0047  1E			    push ds
+ 0048  BA 0005 R		    mov dx, OFFSET FUNC 
+ 004B  B8 ---- R		    mov ax, SEG FUNC 
+ 004E  8E D8			    mov ds, ax 
+ 0050  B4 25			    mov ah, 25h 
+ 0052  B0 08			    mov al, 08h 
+ 0054  CD 21			    int 21h
+ 0056  1F			    pop ds
+				    
+ 0057  CD 08				int 08h
+				
+ 0059  FA				cli
+ 005A  1E				push ds
+ 005B  8B 16 0002 R			mov dx, KEEP_IP
+ 005F  A1 0000 R			mov ax, KEEP_CS
+ 0062  8E D8				mov ds, ax
+ 0064  B4 25				mov ah, 25h
+ 0066  B0 08				mov al, 08h
+ 0068  CD 21				int 21h
+ 006A  1F				pop ds
+ 006B  FB				sti
+ 006C  B4 4C				mov ah, 4ch
+ 006E  CD 21				int 21h    
+ 0070				MAIN ENDP
+ 0070				CODE ENDS
+				     END MAIN
+Microsoft (R) Macro Assembler Version 5.10                  11/20/22 13:32:4
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0400	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	0070	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0013	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+END_MES  . . . . . . . . . . . .  	L BYTE	000D	DATA
+
+FUNC . . . . . . . . . . . . . .  	F PROC	0005	CODE	Length = 002B
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+
+LP . . . . . . . . . . . . . . .  	L NEAR	0010	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0030	CODE	Length = 0040
+MESSAGE  . . . . . . . . . . . .  	L BYTE	0004	DATA
+
+WRITEMSG . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0005
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  lab5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     91 Source  Lines
+     91 Total   Lines
+     16 Symbols
+
+  48016 + 461291 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
