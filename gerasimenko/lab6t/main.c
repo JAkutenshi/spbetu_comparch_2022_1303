@@ -60,7 +60,7 @@ int main() {
         fprintf(f, "%d\t%d\t%d\t%d\n", i + 1, arr[i], res[i], sum_gr[i]);
     }
     for (int i = 0; i < k_inter; i++) {
-        print("%d\t%d\t%d\t%d\n", i + 1, arr[i], res[i], sum_gr[i]);
+        printf("%d\t%d\t%d\t%d\n", i + 1, arr[i], res[i], sum_gr[i]);
     }
     fclose(f);
     return 0;
