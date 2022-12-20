@@ -50,13 +50,17 @@ int main() {
     for(int i=0; i < count_N; i++){
         fprintf(f, "%d ", nums[i]);
     }
+    fprintf(f, "\n\n");
     printf("Массив: ");
     for (int i = 0; i < count_N; i++) {
-        printf("%d ",nums[i]);
+        fprintf(f,"%d ",nums[i]);
     }
     fprintf(f, "\n\n");
     for (int i = 0; i < k_inter; i++) {
         fprintf(f, "%d\t%d\t%d\t%d\n", i + 1, arr[i], res[i], sum_gr[i]);
+    }
+    for (int i = 0; i < k_inter; i++) {
+        print("%d\t%d\t%d\t%d\n", i + 1, arr[i], res[i], sum_gr[i]);
     }
     fclose(f);
     return 0;
