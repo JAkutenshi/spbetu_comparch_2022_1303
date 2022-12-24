@@ -5,81 +5,77 @@
 using namespace std;
 
 extern "C" {
-    void func(int n, int nInt, int* nums, int* intervals, int* res);
+    void firstFunc(int numCount, int tempResSize, int* numbers, int* tempIntervals, int* tempRes);
+
+    void secondFunc(int tempResSize, int intCount, int* tempRes, int* tempIntervals, int* intervals, int* res);
 }
 
 int main() {
-    int n, xMin, xMax, nInt;
-    cin >> n;
-    if (n <= 0 || n > 16000) {
-        cout << "Entered array length is wrong" << endl;
-        exit(-1);
-    }
+    int numCount, xMin, xMax, intCount;
+    cin >> numCount;
     cin >> xMin >> xMax;
-    if (xMin >= xMax) {
-        cout << "Entered limits are wrong" << endl;
+    if (xMin > xMax) {
+        cout << "xMin is larger than xMax" << endl;
         exit(-1);
     }
-    cin >> nInt;
-    if (nInt <= 0 || nInt > 24) {
-        cout << "Entered number of intervals is wrong" << endl;
-        exit(-1);
-    }
-    int *nums = new int[n];
-    int* intervals = new int[nInt + 1];
-    for (int i = 0; i < nInt; i++) {
+    cin >> intCount;
+
+    int* numbers = new int[numCount];
+    int* intervals = new int[intCount + 1];
+    for (int i = 0; i < intCount; i++) {
         cin >> intervals[i];
-        bool wrongValue = false;
-        if (intervals[i] <= xMin || intervals[i] >= xMax) {
-            wrongValue = true;
-        }
-        if (i > 0) {
-            if (intervals[i] < intervals[i - 1]) {
-                wrongValue = true;
-            }
-        }
-        if (wrongValue) {
-            cout << "Entered border is wrong" << endl;
-            delete[] nums;
-            delete[] intervals;
-            exit(-1);
-        }
     }
-    cin >> intervals[nInt];
-    if (intervals[nInt] > xMax) {
-        cout << "Entered border is wrong" << endl;
-        delete[] nums;
-        delete[] intervals;
-        exit(-1);
-    }
+    intervals[intCount] = xMax + 1;
+
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> d(xMin, xMax);
-    for (int i = 0; i < n; i++) {
-        nums[i] = d(gen);
+    for (int i = 0; i < numCount; i++) {
+        numbers[i] = d(gen);
     }
-    fstream outFile;
-    outFile.open("res.txt", ios::out | ios::trunc);
-    for (int i = 0; i < n; i++) {
-        cout << nums[i] << ' ';
-        outFile << nums[i] << ' ';
+
+    fstream resFile;
+    resFile.open("res.txt", ios::out | ios::trunc);
+    for (int i = 0; i < numCount; i++) {
+        cout << numbers[i] << ' ';
+        resFile << numbers[i] << ' ';
     }
     cout << endl;
-    outFile << endl;
-    int* res = new int[nInt]{0};
-    func(n, nInt, nums, intervals, res);
-    for (int i = 0; i < nInt; i++) {
-        if (i < nInt - 1) {
-            cout << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; numbers quantity: " << res[i] << endl;
-            outFile << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; numbers quantity: " << res[i] << endl;
-        } else {
-            cout << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; last right border: " << intervals[nInt] << "; numbers quantity: " << res[i] << endl;
-            outFile << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; last right border: " << intervals[nInt] << "; numbers quantity: " << res[i] << endl;
-        }
+    resFile << endl;
+
+    int tempResSize = xMax + 1 - intervals[0];
+    int* tempIntervals = new int[tempResSize + 1];
+    int* tempRes = new int[tempResSize] {0};
+    for (int i = 0; i < tempResSize; i++) {
+        tempIntervals[i] = intervals[0] + i;
     }
-    outFile.close();
-    delete[] nums;
+    tempIntervals[tempResSize] = xMax + 1;
+
+    firstFunc(numCount, tempResSize, numbers, tempIntervals, tempRes);
+    for (int i = 0; i < tempResSize; i++) {
+        cout << "Temp interval number: " << i + 1 << "; left border: " << tempIntervals[i] << "; numbers quantity: " << tempRes[i] << endl;
+        resFile << "Temp interval number: " << i + 1 << "; left border: " << tempIntervals[i] << "; numbers quantity: " << tempRes[i] << endl;
+    }
+    cout << endl;
+    resFile << endl;
+
+    int* res = new int[intCount] {0};
+    secondFunc(tempResSize, intCount, tempRes, tempIntervals, intervals, res);
+    for (int i = 0; i < intCount; i++) {
+        cout << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; numbers quantity: " << res[i] << endl;
+        resFile << "Interval number: " << i + 1 << "; left border: " << intervals[i] << "; numbers quantity: " << res[i] << endl;
+    }
+
+    resFile.close();
+    delete[] numbers;
     delete[] intervals;
     delete[] res;
     return 0;
 }
+
+/*
+20
+-10 10
+3
+-8 1 5
+*/
